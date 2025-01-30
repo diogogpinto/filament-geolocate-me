@@ -1,15 +1,15 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace DiogoGPinto\GeolocateMe;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 
-class SkeletonPlugin implements Plugin
+class GeolocateMePlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'skeleton';
+        return 'filament-geolocate-me';
     }
 
     public function register(Panel $panel): void
