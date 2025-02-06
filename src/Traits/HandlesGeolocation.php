@@ -2,27 +2,38 @@
 
 namespace DiogoGPinto\GeolocateMe\Traits;
 
+use DiogoGPinto\GeolocateMe\Data\Coordinates;
+use Filament\Actions\Concerns\InteractsWithActions;
+use InvalidArgumentException;
 use Livewire\Attributes\On;
 
 trait HandlesGeolocation
 {
-    public ?array $coords;
+    use InteractsWithActions;
 
-    public ?string $geolocationError;
+    protected ?Coordinates $coords = null;
 
-    #[On('geolocationSuccess')]
-    public function geolocationSuccess($coords)
+    public ?string $geolocateMePendingAction = null;
+
+    public function getCoords(): ?Coordinates
     {
-        dd($coords);
-        $this->coords = $coords;
-        $this->geolocationError = null;
+        return $this->coords;
     }
 
-    #[On('geolocationError')]
-    public function geolocationError($message)
+    #[On('geolocationFromAlpine')]
+    public function geolocationFromAlpine(array $data): void
     {
-        dd($message);
-        $this->geolocationError = $message;
-        $this->coords = null;
+        $this->executePendingAction(Coordinates::fromArray($data));
+    }
+
+    private function executePendingAction(Coordinates $location): void
+    {
+        if ($this->geolocateMePendingAction) {
+            $this->getAction($this->geolocateMePendingAction)->call([
+                'location' => $location,
+            ]);
+            $this->getAction($this->geolocateMePendingAction)->callAfter();
+            $this->geolocateMePendingAction = null;
+        }
     }
 }

@@ -1,25 +1,26 @@
-export default function filamentGeolocateMe() {
+export default function geolocateMe() {
     return {
-        getLocation() {  // New method to be triggered by button
-            if (!navigator.geolocation) {
-                this.handleError('Geolocation is not supported by your browser.');
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    this.handleSuccess(position.coords);
-                },
-                (error) => {
-                    this.handleError(error.message);
-                }
-            );
-        },
-        handleSuccess(coords) {
-            Livewire.dispatch('geolocationSuccess', { coords });
-        },
-        handleError(message) {
-            Livewire.dispatch('geolocationError', { message });
+        init() {
+            Livewire.on('getLocationFromAlpine', () => {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        Livewire.dispatch('geolocationFromAlpine', {
+                            data: {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                                accuracy: position.coords.accuracy
+                            }
+                        });
+                    },
+                    (error) => {
+                        Livewire.dispatch('geolocationFromAlpine', {
+                            data: {
+                                error: error.message
+                            }
+                        });
+                    }
+                );
+            });
         }
-    };
+    }
 }
