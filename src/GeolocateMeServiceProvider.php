@@ -4,7 +4,6 @@ namespace DiogoGPinto\GeolocateMe;
 
 use DiogoGPinto\GeolocateMe\Data\Coordinates;
 use Filament\Actions\Action;
-use Filament\Forms\Form;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Facades\FilamentAsset;
 use Spatie\LaravelPackageTools\Package;
@@ -75,16 +74,12 @@ class GeolocateMeServiceProvider extends PackageServiceProvider
     {
         parent::boot();
 
-        // Configure global action behavior
         Action::configureUsing(function (Action $action): void {
-            $action
-                ->disabled(
-                    fn ($livewire) => property_exists($livewire, 'waitingForAction') &&
-                    $livewire->waitingForAction === true
-                );
+                $action->extraAttributes(fn ($livewire) => [
+                    'disabled' => property_exists($livewire, 'waitingForAction') && $livewire->waitingForAction === true,
+                ], true);;
         });
     }
-
     public function packageBooted(): void
     {
         FilamentAsset::register(
