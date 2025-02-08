@@ -2,7 +2,9 @@
 
 namespace DiogoGPinto\GeolocateMe;
 
+use DiogoGPinto\GeolocateMe\Data\Coordinates;
 use Filament\Actions\Action;
+use Filament\Forms\Form;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Facades\FilamentAsset;
 use Spatie\LaravelPackageTools\Package;
@@ -20,27 +22,66 @@ class GeolocateMeServiceProvider extends PackageServiceProvider
 
         Action::macro('withGeolocation', function () {
             /** @var Action $this */
+            $beforeCallback = $this->before;
+            $actionCallback = $this->action;
+            $afterCallback = $this->after;
+
             return $this
-                ->before(function (Action $action, $livewire) {
-                    if (! is_null($livewire->geolocateMePendingAction)) {
-                        return;
+                ->before(function (Action $action, $livewire) use ($beforeCallback) {
+                    if (is_null($livewire->geolocateMePendingAction)) {
+                        $action->icon(function () {
+                            return view('filament::components.loading-indicator', [
+                                'attributes' => new \Illuminate\View\ComponentAttributeBag,
+                            ]);
+                        });
+                        $livewire->geolocateMePendingAction = $action->getName();
+                        $livewire->waitingForAction = true;
+                        $livewire->dispatch('getLocationFromAlpine');
+                        $action->halt();
                     }
-                    $action->action(null);
-                    $action->icon(function () {
-                        return view('filament::components.loading-indicator', [
-                            'attributes' => new \Illuminate\View\ComponentAttributeBag(['class' => 'animate-spin']),
-                        ]);
-                    });
-                    $livewire->geolocateMePendingAction = $action->getName();
-                    $livewire->dispatch('getLocationFromAlpine');
+
+                    return $action->evaluate($beforeCallback, [], [
+                        Coordinates::class => $livewire->getCoords(),
+                    ]);
                 })
-                ->disabled(fn ($livewire): bool => ! is_null($livewire->geolocateMePendingAction))
+                ->action(function (Action $action, $livewire) use ($actionCallback) {
+                    if ($livewire->waitingForAction) {
+                        return null;
+                    }
+
+                    return $action->evaluate($actionCallback, [], [
+                        Coordinates::class => $livewire->getCoords(),
+                    ]);
+                })
+                ->after(function (Action $action, $livewire) use ($afterCallback) {
+                    if ($livewire->waitingForAction) {
+                        return null;
+                    }
+
+                    return $action->evaluate($afterCallback, [], [
+                        Coordinates::class => $livewire->getCoords(),
+                    ]);
+                })
                 ->extraAttributes([
                     'x-data' => 'geolocateMe()',
                     'x-ignore' => '',
                     'ax-load' => '',
                     'ax-load-src' => FilamentAsset::getAlpineComponentSrc('filament-geolocate-me', 'diogogpinto/filament-geolocate-me'),
                 ], true);
+        });
+    }
+
+    public function boot(): void
+    {
+        parent::boot();
+
+        // Configure global action behavior
+        Action::configureUsing(function (Action $action): void {
+            $action
+                ->disabled(
+                    fn ($livewire) => property_exists($livewire, 'waitingForAction') &&
+                    $livewire->waitingForAction === true
+                );
         });
     }
 

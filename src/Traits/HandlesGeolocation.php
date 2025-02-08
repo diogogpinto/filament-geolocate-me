@@ -3,17 +3,15 @@
 namespace DiogoGPinto\GeolocateMe\Traits;
 
 use DiogoGPinto\GeolocateMe\Data\Coordinates;
-use Filament\Actions\Concerns\InteractsWithActions;
-use InvalidArgumentException;
 use Livewire\Attributes\On;
 
 trait HandlesGeolocation
 {
-    use InteractsWithActions;
-
     protected ?Coordinates $coords = null;
 
     public ?string $geolocateMePendingAction = null;
+
+    public ?bool $waitingForAction = false;
 
     public function getCoords(): ?Coordinates
     {
@@ -21,19 +19,25 @@ trait HandlesGeolocation
     }
 
     #[On('geolocationFromAlpine')]
-    public function geolocationFromAlpine(array $data): void
+    public function geolocationFromAlpine(array $coordinatesData): void
     {
-        $this->executePendingAction(Coordinates::fromArray($data));
+        $this->coords = Coordinates::fromArray($coordinatesData);
+        $this->executePendingAction();
     }
 
-    private function executePendingAction(Coordinates $location): void
+    private function executePendingAction(): void
     {
-        if ($this->geolocateMePendingAction) {
-            $this->getAction($this->geolocateMePendingAction)->call([
-                'location' => $location,
-            ]);
-            $this->getAction($this->geolocateMePendingAction)->callAfter();
-            $this->geolocateMePendingAction = null;
+        $this->waitingForAction = false;
+        if (! is_null($this->geolocateMePendingAction)) {
+            $this->callMountedAction();
         }
+        $this->resetGeolocationData();
+    }
+
+    public function resetGeolocationData(): void
+    {
+        $this->coords = null;
+        $this->geolocateMePendingAction = null;
+        $this->waitingForAction = false;
     }
 }
