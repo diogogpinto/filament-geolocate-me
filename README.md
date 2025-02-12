@@ -2,7 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/diogogpinto/filament-geolocate-me.svg?style=flat-square)](https://packagist.org/packages/diogogpinto/filament-geolocate-me)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/diogogpinto/filament-geolocate-me/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/diogogpinto/filament-geolocate-me/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/diogogpinto/filament-geolocate-me/fix-php-code-styling.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/diogogpinto/filament-geolocate-me/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/diogogpinto/filament-geolocate-me/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/diogogpinto/filament-geolocate-me/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/diogogpinto/filament-geolocate-me.svg?style=flat-square)](https://packagist.org/packages/diogogpinto/filament-geolocate-me)
 
 ## Want to get a user's location before an Action is performed on Filament?
