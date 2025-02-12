@@ -88,5 +88,4 @@ class GetGeolocation
 
         return $this;
     }
-
 }

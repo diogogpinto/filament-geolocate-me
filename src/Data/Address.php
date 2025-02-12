@@ -16,5 +16,4 @@ final readonly class Address
         public ?string $country = null,
         public ?string $country_code = null,
     ) {}
-
 }
