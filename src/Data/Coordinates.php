@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DiogoGPinto\GeolocateMe\Data;
 
-use InvalidArgumentException;
+use DiogoGPinto\GeolocateMe\Exceptions\InvalidCoordinatesException;
 use JsonSerializable;
 
-class Coordinates implements JsonSerializable
+final readonly class Coordinates implements JsonSerializable
 {
     public function __construct(
-        public readonly ?float $latitude = null,
-        public readonly ?float $longitude = null,
-        public readonly ?float $accuracy = null,
-        public readonly ?string $error = null,
+        public ?float $latitude = null,
+        public ?float $longitude = null,
+        public ?float $accuracy = null,
+        public ?string $error = null,
     ) {}
 
     public static function fromArray(array $data): self
@@ -28,7 +30,7 @@ class Coordinates implements JsonSerializable
                 $data['longitude'],
                 $data['accuracy'] ?? null
             );
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidCoordinatesException $e) {
             return new self(error: $e->getMessage());
         }
     }
@@ -38,7 +40,7 @@ class Coordinates implements JsonSerializable
         return $this->error !== null;
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return [
             'latitude' => $this->latitude,
@@ -51,7 +53,7 @@ class Coordinates implements JsonSerializable
     private static function validate(array $data): void
     {
         if (! self::isValid($data)) {
-            throw new InvalidArgumentException('Invalid coordinates provided');
+            throw new InvalidCoordinatesException('Invalid coordinates provided');
         }
     }
 

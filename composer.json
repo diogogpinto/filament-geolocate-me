@@ -68,6 +68,11 @@
             "aliases": {
                 "GeolocateMe": "DiogoGPinto\\GeolocateMe\\Facades\\GeolocateMe"
             }
+        },
+        "autoload": {
+            "files": [
+                "ide.php"
+            ]
         }
     },
     "minimum-stability": "dev",
