@@ -7,7 +7,7 @@ namespace DiogoGPinto\GeolocateMe\Data;
 use DiogoGPinto\GeolocateMe\Exceptions\InvalidCoordinatesException;
 use JsonSerializable;
 
-final readonly class Coordinates implements JsonSerializable
+final class Coordinates implements JsonSerializable
 {
     public function __construct(
         public ?float $latitude = null,

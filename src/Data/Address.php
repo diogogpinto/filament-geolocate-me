@@ -2,7 +2,7 @@
 
 namespace DiogoGPinto\GeolocateMe\Data;
 
-final readonly class Address
+final class Address
 {
     public function __construct(
         public ?string $displayName = null,
