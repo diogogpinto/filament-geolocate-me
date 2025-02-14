@@ -7,10 +7,8 @@ export default function geolocateMe() {
                     (position) => {
                         Livewire.dispatch('geolocationFromAlpine', {
                             coordinatesData: {
-                                // latitude: position.coords.latitude,
-                                // longitude: position.coords.longitude,
-                                latitude: 48.858093,
-                                longitude: 2.294694,
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
                                 accuracy: position.coords.accuracy,
                             },
                         })
