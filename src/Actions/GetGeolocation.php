@@ -81,11 +81,4 @@ class GetGeolocation
                 ),
             ]);
     }
-
-    public function withGeocode(): self
-    {
-        $this->shouldGeocode = true;
-
-        return $this;
-    }
 }
