@@ -2,6 +2,10 @@
 
 All notable changes to `filament-geolocate-me` will be documented in this file.
 
+## v0.1.1 - 2025-02-14
+
+**Full Changelog**: https://github.com/diogogpinto/filament-geolocate-me/compare/v0.1...v0.1.1
+
 ## v0.1 - 2025-02-12
 
 ### What's Changed
